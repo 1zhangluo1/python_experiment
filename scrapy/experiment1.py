@@ -10,27 +10,26 @@ headers = {
                   'Chrome/91.0.4472.124 Safari/537.36'
 }
 
-results = [] #电影结果列表
-
+results = []
 
 def download_image(movies):
-    if not os.path.exists('pictures'):
-        os.makedirs('pictures')
+    if not os.path.exists('pictures1'):
+        os.makedirs('pictures1')
     for movie in movies:
         image_url = movie.post
         try:
             response = requests.get(image_url)
             response.raise_for_status()
-            file_name = f"pictures/{movie.name}.jpg"
+
+            file_name = f"pictures1/{movie.name}.jpg"
             with open(file_name, 'wb') as file:
                 file.write(response.content)
-            #print(f"成功保存图片: {file_name}")
         except requests.exceptions.RequestException as e:
             print(f"下载图片失败: {image_url}，错误: {e}")
 
 
 def save_movie(movies):
-    with open('result.txt', 'w', encoding='utf-8') as result_file:
+    with open('../result.txt', 'w', encoding='utf-8') as result_file:
         for movie in movies:
             content = f"电影：{movie.name}\n人物：{movie.filter}\n介绍：{movie.introduce}\n海报路径：{movie.post}\n热度：{movie.heat}"
             result_file.write(content)
@@ -48,7 +47,7 @@ def getData(url,header):
             post = movie.select_one('div.rvi__img__box > picture').get('id')
             full_post_url = 'https:' + post
             content = movie.select_one('div.rvi__con')
-            title = content.select_one('div.rvi__tit1')
+            title = content.select_one('div.rvi__tit1').text.strip()
             filter = content.select_one('div.rvi__type1').text.strip()
             introduce = content.select_one('p').text.strip()
             single_movie = Movie(name=title, filter=filter, introduce=introduce, post=full_post_url, heat=heat)
@@ -57,7 +56,9 @@ def getData(url,header):
         print("爬取完成")
     else:
         print(f"请求失败，状态码: {response.status_code}")
-
-getData(url=url,header=headers)
+        
+getData(url=url, header=headers)
 save_movie(results)
 download_image(results)
+
+
