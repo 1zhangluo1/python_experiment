@@ -25,6 +25,7 @@ class AiqiyiSpider:
             response = requests.get(self.full_url, headers=self.headers)
             response.encoding = 'utf-8'
             response.raise_for_status()
+            print(response.text)
             return response.text
         except requests.RequestException as e:
             print(f"Error fetching {self.full_url}: {e}")
@@ -85,9 +86,9 @@ class AiqiyiSpider:
 
     def run(self):
         html_text = self.fetch_page()
-        self.parse_movie_info(html_text=html_text)
-        self.save_movie()
-        self.download_image()
+        # self.parse_movie_info(html_text=html_text)
+        # self.save_movie()
+        # self.download_image()
 
     def log_result(self):
         movies = self.movies
